@@ -123,6 +123,14 @@ C3     FORMAT(I5)
 C      WRITE(6, 4) (X(I), Y(I), I=1, NP)
 C4     FORMAT(2F10.5, 10X, 2F10.5, 10X, 2F10.5)
 C4     FORMAT(F10.5, 3X, F10.5)
+C
+C *********************************
+C
+C     WRITE RHINO COMMAND FILE
+C       TO GENERATE 3D HULL
+C
+C *********************************
+C
       OPEN(6, STATUS='NEW', FORM='FORMATTED', FILE='RhinoDARPA2Hull')
       WRITE(6, 1)
 1     FORMAT('InterpCrv')
