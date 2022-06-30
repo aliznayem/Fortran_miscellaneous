@@ -114,15 +114,38 @@ C      WRITE OFFSETS TO TAPE 6
 C
 C **********************************
 C
-      WRITE(6, 1)
-1     FORMAT('DARPA2')
-      WRITE(6, 2)
-2     FORMAT('MODEL WITH (MODEL/FULL) = 24')
-      WRITE(6, 3) NP
-3     FORMAT(I5)
-      WRITE(6, 4) (X(I), Y(I), I=1, NP)
+C      WRITE(6, 1)
+C1     FORMAT('DARPA2')
+C      WRITE(6, 2)
+C2     FORMAT('MODEL WITH (MODEL/FULL) = 24')
+C      WRITE(6, 3) NP
+C3     FORMAT(I5)
+C      WRITE(6, 4) (X(I), Y(I), I=1, NP)
 C4     FORMAT(2F10.5, 10X, 2F10.5, 10X, 2F10.5)
-4     FORMAT(F10.5, 3X, F10.5)
+C4     FORMAT(F10.5, 3X, F10.5)
+      OPEN(6, STATUS='NEW', FORM='FORMATTED', FILE='RhinoDARPA2Hull')
+      WRITE(6, 1)
+1     FORMAT('InterpCrv')
+      WRITE(6, 2) (X(I), Y(I), I=1, NP-1)
+2     FORMAT(F0.5, ',', F0.5, ',0.0')
+      WRITE(6, 3)
+3     FORMAT('enter')
+      WRITE(6, 4)
+4     FORMAT('Revolve')
+      WRITE(6, 5)
+5     FORMAT('SelAll')
+      WRITE(6, 6)
+6     FORMAT('enter')
+      WRITE(6, 7) X(1), Y(1)
+7     FORMAT(F0.5, ',', F0.5, ',0.0')
+      WRITE(6, 8) X(NP-1), Y(NP-1)
+8     FORMAT(F0.5, ',', F0.5, ',0.0')
+      WRITE(6, 9)
+9     FORMAT('0')
+      WRITE(6, 10)
+10    FORMAT('360')
+      WRITE(6, 11)
+11    FORMAT('enter')
 C
 C  ALL DONE, PROGRAM ENDS
 C
