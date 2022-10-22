@@ -91,8 +91,10 @@ C      WING 2 HAS LEADING EDGE AT (X=13.46990, Y=0.3558)
 C             AND TRAILING EDGE AT (X=14.23, Y=0.33628)
 C
       NXC = 26
-      DO 1000 KK = 1, 2
-      WRITE(6, 2)
+C      DO 1000 KK = 1, 2
+C     Using either ring wing 1 or 2
+      KK = 1
+C      WRITE(6, 2)
 C
 C ***************************
 C
@@ -113,10 +115,10 @@ C
       YCP(I) = -0.049921*(E*ALOG(E) - D*ALOG(ABS(D))) +
      +          0.02995253*(ALOG(X) + 0.4689244)
 C      WRITE(6, 1) I, 100.0*XC(I), 100.0*YC(I), YCP(I)
-1     FORMAT(I5, 2F10.3, F10.5)
+C1     FORMAT(I5, 2F10.3, F10.5)
 100   CONTINUE
 C      WRITE(6, 2)
-2     FORMAT(//)
+C2     FORMAT(//)
 C
 C *******************************
 C
@@ -137,12 +139,13 @@ C
       GOTO 199
 150   CONTINUE
       XC1 = 1.0 - XC(I)
-      YT(I) = 0.033333 + 1.696969*XCl - 1.441945*XC1*XC1 -
+      YT(I) = 0.033333 + 1.696969*XC1 - 1.441945*XC1**2 -
      +        0.366363*XC1**3 + 0.333049*XC1**4
 199   CONTINUE
       YT(I) = 0.1*YT(I)
+
 C      WRITE(6, 3) I, X, YT(I)
-3     FORMAT(I5, F10.3, F10.5)
+C3     FORMAT(I5, F10.3, F10.5)
 200   CONTINUE
 C      WRITE(6, 2)
 C
@@ -162,7 +165,6 @@ C
       I = 1
 C      WRITE(6, 6)
 C6     FORMAT(2X,1HI,3X,4H XU,5X,4H YU,5X,4H XL,5X,4H YL,6X,3HX/C,7X,2HYT,7X,2HYC,4X,7HDYC/DXC/)
-5     FORMAT(I3, 4F9.5, F9.4, 4F9.5)
 C      WRITE(6,5) I,XU(I),YU(I),XL(I),YL(I),XC(I),YT(I),YC(I),YCP(I)
       DO 300 I = 2, NXC
       TH = ATAN(YCP(I))
@@ -186,18 +188,46 @@ C
       SN = SIN(PHI)
       CHORD = SQRT((YDTE(KK) - YDLE(KK))**2 + (XDTE(KK) - XDLE(KK))**2)
 C      WRITE(6,444) XDLE(KK),YDLE(KK),XDTE(KK),YDTE(KK)
-444   FORMAT(2X,'(XDLE,YDLB) = ',F10.5/2X,'(XDTE,YDTE) = ',F10.5)
+C444   FORMAT(2X,'(XDLE,YDLB) = ',F10.5/2X,'(XDTE,YDTE) = ',F10.5)
 C      WRITE(6, 6)
+C      DO 400 I = 1, NXC
+C      XUU = XU(I)
+C      XU(I) = XDLE(KK) + CHORD*(XU(I)*CS - YU(I)*SN)
+C      YU(I) = YDLE(KK) + CHORD*(XUU*SN + YU(I)*CS)
+C      XLL = XL(I)
+C      XL(I) = XDLE(KK) + CHORD*(XL(I)*CS - YL(I)*SN)
+C      YL(I) = YDLE(KK) + CHORD*(XLL*SN + YL(I)*CS)
+C      WRITE(6,5) I,XU(I),YU(I),XL(I),YL(I),XC(I),YT(I),YC(I),YCP(I)
+C5     FORMAT(I3, 4F9.5, F9.4, 4F9.5)
+C4     FORMAT(I5, 4F10.5)
+C400   CONTINUE
+
+      OPEN(6, STATUS='NEW', FORM='FORMATTED',
+     +     FILE='RhinoDARPA2RingWing')
+
+C     Upper edge
+      WRITE(6, 1)
+1     FORMAT('InterpCrv')
       DO 400 I = 1, NXC
       XUU = XU(I)
       XU(I) = XDLE(KK) + CHORD*(XU(I)*CS - YU(I)*SN)
       YU(I) = YDLE(KK) + CHORD*(XUU*SN + YU(I)*CS)
+      WRITE(6, 2) XU(I),YU(I), 0.0
+2     FORMAT(F0.5, ',', F0.5, ',', F0.5)
+400   CONTINUE
+      WRITE(6, 3)
+3     FORMAT('enter')
+
+C     Lower edge
+      WRITE(6, 1)
+      DO 500 I = 1, NXC
       XLL = XL(I)
       XL(I) = XDLE(KK) + CHORD*(XL(I)*CS - YL(I)*SN)
       YL(I) = YDLE(KK) + CHORD*(XLL*SN + YL(I)*CS)
-      WRITE(6,5) I,XU(I),YU(I),XL(I),YL(I),XC(I),YT(I),YC(I),YCP(I)
-4     FORMAT(I5, 4F10.5)
-400   CONTINUE
+      WRITE(6,2) XL(I),YL(I), 0.0
+500   CONTINUE
+      WRITE(6, 3)
+
 C
 C ***************************************
 C
@@ -205,26 +235,26 @@ C WRITE WING OFFSETS TO FILE 7 FOR IPLOT
 C
 C ***************************************
 C
-      IF(KK .EQ. 1) WRITE(7, 10)
-10    FORMAT('S1')
-      IF(KK .EQ. 2) WRITE(7, 11)
-11    FORMAT('S2')
-      IF(KK .EQ. 1) WRITE(7, 12)
-12    FORMAT('DARPA2 RING WING 1 ')
-      IF(KK .EQ. 2) WRITE(7, 15)
-15    FORMAT('DARPA2 RING WING 2 ')
-      NXC2 = 2*NXC
-      WRITE(7, 13) NXC2
-13    FORMAT(I5)
-      DO 500 I = 1, NXC2
-      IF(I .GT. NXC) GOTO 450
-      WRITE(7, 14) XU(I), YU(I)
-      GOTO 500
-450   CONTINUE
-      J = NXC2 - I + 1
-      WRITE(7, 14) XL(J), YL(J)
-500   CONTINUE
-14    FORMAT(2F10.5)
+C      IF(KK .EQ. 1) WRITE(7, 10)
+C10    FORMAT('S1')
+C      IF(KK .EQ. 2) WRITE(7, 11)
+C11    FORMAT('S2')
+C      IF(KK .EQ. 1) WRITE(7, 12)
+C12    FORMAT('DARPA2 RING WING 1 ')
+C      IF(KK .EQ. 2) WRITE(7, 15)
+C15    FORMAT('DARPA2 RING WING 2 ')
+C      NXC2 = 2*NXC
+C      WRITE(7, 13) NXC2
+C13    FORMAT(I5)
+C      DO 500 I = 1, NXC2
+C      IF(I .GT. NXC) GOTO 450
+C      WRITE(7, 14) XU(I), YU(I)
+C      GOTO 500
+C450   CONTINUE
+C      J = NXC2 - I + 1
+C      WRITE(7, 14) XL(J), YL(J)
+C500   CONTINUE
+C14    FORMAT(2F10.5)
 C
 C **********************************
 C
@@ -233,15 +263,15 @@ C           ONTO FILE 9.
 C
 C **********************************
 C
-      DO 600 I = 1, NXC2
-      IF(I .GT. NXC) GOTO 550
-      J = NXC - I + 1
-      WRITE(9, 14) XL(J), YL(J)
-      GOTO 600
-550   CONTINUE
-      K = I - NXC
-      WRITE(9, 14) XU(K), YU(K)
-600   CONTINUE
-1000  CONTINUE
+C      DO 600 I = 1, NXC2
+C      IF(I .GT. NXC) GOTO 550
+C      J = NXC - I + 1
+C      WRITE(9, 14) XL(J), YL(J)
+C      GOTO 600
+C550   CONTINUE
+C      K = I - NXC
+C      WRITE(9, 14) XU(K), YU(K)
+C600   CONTINUE
+C1000  CONTINUE
       STOP
       END

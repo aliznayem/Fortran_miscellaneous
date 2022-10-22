@@ -148,25 +148,47 @@ C            IN IPLOT FORMAT
 C
 C *****************************************
 C
-1014  OPEN(6, STATUS='NEW', FORM='FORMATTED', FILE='TP6')
-      WRITE(6, 1015)
-1015  FORMAT('DARPA2 SAIL')
-      WRITE(6, 1016)
-1016  FORMAT('MODEL WITH (MODEL/FULL) = 24')
-      WRITE(6, 1017) NI
-1017  FORMAT(I5)
-      WRITE(6, 1018) (X(I, 1, 1), X(I, 1, 2), I=1, NI)
-1018  FORMAT(2F10.5, 3X, 2F10.5, 3X, 2F10.5)
-      DO 1013 I = 1, NI, 8
-      WRITE(6, 1009) I
-1009  FORMAT(I3)
-      WRITE(6, 1010) X(I, 1, 1)
-1010  FORMAT(' X=', F7.3, ' FEET')
-      WRITE(6, 1011) (NP(I) + 1)
-1011  FORMAT(I5)
-      WRITE(6, 1012) X(I, 1, 2), 1.5
-      WRITE(6, 1012) (X(I, J, 2), X(I, J, 3), J=1, NP(I))
-1012  FORMAT(2F10.5, 3X, 2F10.5, 3X, 2F10.5)
-1013  CONTINUE
+C1014  OPEN(6, STATUS='NEW', FORM='FORMATTED', FILE='TP6')
+C      WRITE(6, 1015)
+C1015  FORMAT('DARPA2 SAIL')
+C      WRITE(6, 1016)
+C1016  FORMAT('MODEL WITH (MODEL/FULL) = 24')
+C      WRITE(6, 1017) NI
+C1017  FORMAT(I5)
+C      WRITE(6, 1018) (X(I, 1, 1), X(I, 1, 2), I=1, NI)
+C 1018  FORMAT(2F10.5, 3X, 2F10.5, 3X, 2F10.5)
+C1018  FORMAT (2F10.5)
+C      DO 1013 I = 1, NI, 8
+C      WRITE(6, 1009) I
+C1009  FORMAT(I3)
+C      WRITE(6, 1010) X(I, 1, 1)
+C1010  FORMAT(' X=', F7.3, ' FEET')
+C      WRITE(6, 1011) (NP(I) + 1)
+C1011  FORMAT(I5)
+C      WRITE(6, 1012) X(I, 1, 2), 1.5
+C      WRITE(6, 1012) (X(I, J, 2), X(I, J, 3), J=1, NP(I))
+C 1012  FORMAT(2F10.5, 3X, 2F10.5, 3X, 2F10.5)
+C1012  FORMAT(2F10.5)
+C1013  CONTINUE
+C
+C *********************************
+C
+C     WRITE RHINO COMMAND FILE
+C       TO GENERATE FAIRWATER
+C
+C *********************************
+C
+1014  OPEN(7, STATUS='NEW', FORM='FORMATTED',
+     +     FILE='RhinoDARPA2Fairwater')
+      DO 100 I = 1, NI, 8
+      WRITE(7, 1)
+1     FORMAT('InterpCrv')
+      WRITE(7, 2) X(I, 1, 1), X(I, 1, 2), 1.5
+      WRITE(7, 2) (X(I, 1, 1), X(I, J, 2), X(I, J, 3), J=1, NP(I))
+2     FORMAT(F0.5, ',', F0.5, ',', F0.5)
+      WRITE(7, 3)
+3     FORMAT('enter')
+100   CONTINUE
+
 666   STOP
       END

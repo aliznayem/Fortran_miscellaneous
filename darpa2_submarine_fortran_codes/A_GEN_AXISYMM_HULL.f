@@ -52,6 +52,7 @@ C
       A4 = A**4
       B = 1.2*XX + 1.0
       R = CB1*XX*A4 + CB2*XX*XX*A3 + 1.0 - A4*B
+      R = RMAX * (R**CB3)
       X(I) = XX
       Y(I) = R
       GO TO 1000

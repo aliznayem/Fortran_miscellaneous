@@ -1,0 +1,30 @@
+Compile and run the fortran files in aphabetical order. Add .txt extension to all generated script files.
+
+Generate Hull:
+1. Open Rhino. Run "ReadCommandFile".
+2. Select RhinoDARPA2Hull.txt file. Hull will be generated.
+
+Generate Fairwater:
+1. Do not close previously opened Rhino project. Run "ReadCommandFile".
+2. Select RhinoDARPA2Fairwater.txt file. Half cross section profiles will be generated.
+3. Select curves and "Mirror" along x-axis.
+4. Select all curves and "Join".
+5. Do "Loft" operation and select Rebuild with 10 control points.
+6. "ExtrudeCrv" from fairwater cap edge.
+7. "Join" all fairwater surfaces.
+8. Do "BooleanDifference" operation with hull.
+
+Generate Appendages:
+1. Do not close previously opened Rhino project. Run "ReadCommandFile".
+2. Select RhinoDARPA2Appendages.txt file. Half cross section profiles will be generated.
+3. Do "Loft" operation and select Rebuild with 10 control points.
+4. Select half surface and "Mirrow" along z-axis.
+5. Close opening regions by "EdgeSrf" command.
+6. Do "BooleanSplit" operation with hull and delete inner part.
+6. Make 4 copy by "ArrayPolar" command.
+
+Generate Ring Wing:
+1. Do not close previously opened Rhino project. Run "ReadCommandFile".
+2. Select RhinoDARPA2RingWing.txt file. Half cross section profiles will be generated.
+3. "Join" curves.
+4. Do "Revolve" operation.

@@ -51,6 +51,7 @@ C DOING ABOVE AS DATA INITIALIZATION IS NOT WORKING IN GFORTRAN
 C
 C      DATA H/12.729617, 13.146284, 13.562950/
       H(1) = 12.729617
+C     H(2) = baseline
       H(2) = 13.146284
       H(3) = 13.562950
 C
@@ -61,10 +62,14 @@ C           APPENDAGE TRAILING EDGE
 C
 C ********************************************
 C
-      DO 900 K = 1, 3
-      HH = H(K)
-      WRITE(6, 1) HH
-1     FORMAT(//2X, 'STERN APPENDAGE TRAILING EDGE LOCATED AT X=', F10.5)
+      OPEN(6, STATUS='NEW', FORM='FORMATTED',
+     +     FILE='RhinoDARPA2Appendages')
+C      DO 900 K = 1, 3
+C      HH = H(K)
+C     Taking H(2)
+      HH = H(2)
+C      WRITE(6, 1) HH
+C1     FORMAT(//2X, 'STERN APPENDAGE TRAILING EDGE LOCATED AT X=', F10.5)
       DX = 0.05
       X = HH + DX
 C
@@ -199,14 +204,18 @@ C             TO PRINTER FILE 6
 C
 C ********************************************
 C
-      IF(I750 .EQ. 0) WRITE(6, 2)
-2     FORMAT(/6X, 1HX, 9X, 1HY, 6X, 6H(+/-)Z)
+C      IF(I750 .EQ. 0) WRITE(6, 2)
+      IF(I750 .EQ. 0) WRITE(6, 1)
+1     FORMAT('InterpCrv')
+C2     FORMAT(/6X, 1HX, 9X, 1HY, 6X, 6H(+/-)Z)
       WRITE(6, 3) XXX, RR, Z
-3     FORMAT(3F10.5)
+2     FORMAT(F0.5, ',', F0.5, ',', F0.5)
       I750 = I750 + 1
       RBSMAX = RR
       IF(I750 .EQ. 1) GOTO 740
 750   CONTINUE
+      WRITE(6, 3)
+3     FORMAT('enter')
 800   CONTINUE
 C
 C ********************************************
@@ -225,7 +234,7 @@ C
       IF(RR .GT. RMAX) RR = RMAX
       IF(RR .EQ. RO) GOTO 900
       CY = -0.466308*RR + 0.88859
-      WRITE(6, 2)
+      WRITE(6, 1)
       DO 840 J = 1, NP
       XI = XXI(J)
       XXX = (XI - 1.0)*CY + HH
@@ -239,9 +248,10 @@ C             TO PRINTER FILE 6
 C
 C ********************************************
 C
-      WRITE(6, 3) XX, RR, Z
+      WRITE(6, 2) XXX, RR, Z
 840   CONTINUE
+      WRITE(6, 3)
 850   CONTINUE
-900   CONTINUE
-      STOP
+C900   CONTINUE
+900   STOP
       END
