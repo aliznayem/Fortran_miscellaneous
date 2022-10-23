@@ -28,3 +28,11 @@ Generate Ring Wing:
 2. Select RhinoDARPA2RingWing.txt file. Half cross section profiles will be generated.
 3. "Join" curves.
 4. Do "Revolve" operation.
+
+Generate Ring Wing Struts:
+1. Do not close previously opened Rhino project. Run "ReadCommandFile".
+2. Select RhinoDARPA2Struts.txt file. Half cross section profiles will be generated.
+3. "Join" curves.
+4. Do "ExtrudeCrv" operation.
+5. Do "ArrayPolar" operation.
+6. So "Split" operation.

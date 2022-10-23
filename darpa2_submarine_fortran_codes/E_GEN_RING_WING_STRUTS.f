@@ -72,6 +72,12 @@ C     +       'Y STBD ',3X,'Z STBD '/)
 C
 C  100 LOOP OVER STRUT CHORD
 C
+      OPEN(6, STATUS='NEW', FORM='FORMATTED',
+     +     FILE='RhinoDARPA2Struts')
+
+C     Upper edge
+      WRITE(6, 1)
+1     FORMAT('InterpCrv')
       DO 100 I = 1, NP
       XI = XC(I)
       XUL(I) = X0 + 0.243995*XI
@@ -80,9 +86,21 @@ C
      +     0.28520*XI**3 - 0.10450*XI**4)
       ZU(I) = ZT
       ZL(I) = -ZT
-      WRITE(6,3) XUL(I),YUL(I),ZU(I),XUL(I),YUL(I),ZL(I)
-3     FORMAT(3F10.5,2X,3F10.5)
+C      WRITE(6,3) XUL(I),YUL(I),ZU(I),XUL(I),YUL(I),ZL(I)
+C3     FORMAT(3F10.5,2X,3F10.5)
+      WRITE(6, 2) XUL(I), YUL(I), ZU(I)
+2     FORMAT(F0.5, ',', F0.5, ',', F0.5)
 100   CONTINUE
+      WRITE(6, 3)
+3     FORMAT('enter')
+
+C     Lower edge
+      WRITE(6, 1)
+      DO 110 I = 1, NP
+      WRITE(6, 2) XUL(I), YUL(I), ZL(I)
+110   CONTINUE
+      WRITE(6, 3)
+
 200   CONTINUE
       STOP
       END
